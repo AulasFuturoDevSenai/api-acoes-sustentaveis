@@ -1,0 +1,46 @@
+package br.com.senai.projetoSustentavel.model.entity;
+
+import br.com.senai.projetoSustentavel.model.enums.TipoResponsavel;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+@Entity
+@Table(name =  "responsaveis")
+public class Responsavel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "O nome do responsável é obrigatório")
+    private String nome;
+
+    @NotNull(message = "O tipo do responsável é obrigatório")
+    @Enumerated(EnumType.STRING)
+    private TipoResponsavel tipo;
+
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public TipoResponsavel getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoResponsavel tipo) {
+        this.tipo = tipo;
+    }
+}
