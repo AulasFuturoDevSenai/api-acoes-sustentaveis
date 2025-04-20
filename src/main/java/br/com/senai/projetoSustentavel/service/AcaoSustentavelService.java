@@ -1,5 +1,6 @@
 package br.com.senai.projetoSustentavel.service;
 
+import br.com.senai.projetoSustentavel.model.exceptions.CategoriaInvalidaException;
 import br.com.senai.projetoSustentavel.model.exceptions.RecursoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 import br.com.senai.projetoSustentavel.model.dtos.AcaoSustentavelRequest;
@@ -10,6 +11,7 @@ import br.com.senai.projetoSustentavel.repository.AcaoSustentavelRepository;
 import br.com.senai.projetoSustentavel.repository.ResponsavelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import br.com.senai.projetoSustentavel.model.enums.CategoriaAcao;
 
 import java.util.List;
 
@@ -20,6 +22,24 @@ public class AcaoSustentavelService {
 
     @Autowired
     private ResponsavelRepository responsavelRepository;
+
+
+    public List<AcaoSustentavelResponse> listarPorCategoria(String tipo) {
+        CategoriaAcao categoria;
+        try {
+            categoria = CategoriaAcao.valueOf(tipo.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new CategoriaInvalidaException("Categoria inválida: " + tipo + ". As opções válidas são: " +
+                    java.util.Arrays.toString(CategoriaAcao.values()));
+        }
+
+        return acaoRepository.findByCategoria(categoria)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+
 
     public AcaoSustentavelResponse criar(AcaoSustentavelRequest request) {
         Responsavel responsavel = responsavelRepository.findById(request.getIdResponsavel())
@@ -85,5 +105,9 @@ public class AcaoSustentavelService {
                 acao.getDataRealizacao(),
                 acao.getResponsavel().getNome()
         );
+
+
+
+
     }
 }

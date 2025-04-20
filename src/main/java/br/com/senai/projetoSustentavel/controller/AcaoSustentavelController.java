@@ -23,10 +23,23 @@ public class AcaoSustentavelController {
         return acaoSustentavelService.listarTodas();
     }
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public ResponseEntity<AcaoSustentavelResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(acaoSustentavelService.buscarPorId(id));
+    }*/
+    @GetMapping("/{id}")
+    public ResponseEntity<AcaoSustentavelResponse> buscarPorId(@PathVariable Long id) {
+        AcaoSustentavelResponse response = acaoSustentavelService.buscarPorId(id);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(response);
     }
+
+
+
+
+
 
     @PostMapping
     public ResponseEntity<AcaoSustentavelResponse> cadastrar(@Valid @RequestBody AcaoSustentavelRequest request) {
@@ -44,5 +57,12 @@ public class AcaoSustentavelController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         acaoSustentavelService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //Filtrar por categoria
+    @GetMapping("/categoria")
+    public ResponseEntity<List<AcaoSustentavelResponse>> listarPorCategoria(@RequestParam String tipo) {
+        List<AcaoSustentavelResponse> resultados = acaoSustentavelService.listarPorCategoria(tipo);
+        return ResponseEntity.ok(resultados);
     }
 }
