@@ -8,9 +8,8 @@ import br.com.senai.projetoSustentavel.model.dtos.AcaoSustentavelResponse;
 import br.com.senai.projetoSustentavel.model.entity.AcaoSustentavel;
 import br.com.senai.projetoSustentavel.model.entity.Responsavel;
 import br.com.senai.projetoSustentavel.repository.AcaoSustentavelRepository;
-import br.com.senai.projetoSustentavel.repository.ResponsavelRepository;
+import br.com.senai.projetoSustentavel.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import br.com.senai.projetoSustentavel.model.enums.CategoriaAcao;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class AcaoSustentavelService {
     private AcaoSustentavelRepository acaoRepository;
 
     @Autowired
-    private ResponsavelRepository responsavelRepository;
+    private UsuarioRepository usuarioRepository;
 
 
     public List<AcaoSustentavelResponse> listarPorCategoria(String tipo) {
@@ -42,7 +41,7 @@ public class AcaoSustentavelService {
 
 
     public AcaoSustentavelResponse criar(AcaoSustentavelRequest request) {
-        Responsavel responsavel = responsavelRepository.findById(request.getIdResponsavel())
+        Responsavel responsavel = usuarioRepository.findById(request.getIdResponsavel())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Responsável não encontrado"));
 
         AcaoSustentavel acao = new AcaoSustentavel();
@@ -75,7 +74,7 @@ public class AcaoSustentavelService {
         AcaoSustentavel acao = acaoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ação não encontrada com ID: " + id));
 
-        Responsavel responsavel = responsavelRepository.findById(request.getIdResponsavel())
+        Responsavel responsavel = usuarioRepository.findById(request.getIdResponsavel())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Responsável não encontrado"));
 
         acao.setTitulo(request.getTitulo());
@@ -103,7 +102,7 @@ public class AcaoSustentavelService {
                 acao.getDescricao(),
                 acao.getCategoria(),
                 acao.getDataRealizacao(),
-                acao.getResponsavel().getNome()
+                acao.getResponsavel().getUsername()
         );
 
 

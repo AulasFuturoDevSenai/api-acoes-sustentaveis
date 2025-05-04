@@ -1,46 +1,59 @@
 package br.com.senai.projetoSustentavel.model.entity;
-
-import br.com.senai.projetoSustentavel.model.enums.TipoResponsavel;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
-@Table(name =  "responsaveis")
-public class Responsavel {
+public class Responsavel implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O nome do responsável é obrigatório")
-    private String nome;
-
-    @NotNull(message = "O tipo do responsável é obrigatório")
-    @Enumerated(EnumType.STRING)
-    private TipoResponsavel tipo;
+    @Column(nullable = false, unique = true)
+    private String username;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    private String role; // Ex: ROLE_ADMIN, ROLE_USER
 
     // Getters e Setters
-    public Long getId() {
-        return id;
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
+
+    @Override
+    public String getUsername() { return username; }
+
+    public void setUsername(String username) { this.username = username; }
+
+    @Override
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) { this.password = password; }
+
+    public String getRole() { return role; }
+
+    public void setRole(String role) { this.role = role; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Override
+    public boolean isAccountNonExpired() { return true; }
 
-    public String getNome() {
-        return nome;
-    }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
 
-    public TipoResponsavel getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoResponsavel tipo) {
-        this.tipo = tipo;
-    }
+    @Override
+    public boolean isEnabled() { return true; }
 }
